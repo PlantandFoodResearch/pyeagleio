@@ -101,3 +101,4 @@ jobs:
           repository_url: https://push.fury.io/fuschiacoppergoose/
           # Unknown reason the long_description check fails
           verify_metadata: false
+          skip_existing: true  # Todo: disable this on tagged builds
