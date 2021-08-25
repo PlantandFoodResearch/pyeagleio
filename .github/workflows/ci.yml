@@ -97,7 +97,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         if: ${{ runner.os == 'ubuntu-latest'}} && ${{ runner.os == '3.9'}} 
         with:
-          user: ${{ secrets.GEMFURY_TOEKN }}
+          user: ${{ secrets.GEMFURY_TOKEN }}
           repository_url: https://push.fury.io/fuschiacoppergoose/
           # Unknown reason the long_description check fails
           verify_metadata: false
