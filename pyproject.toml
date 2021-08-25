@@ -6,9 +6,14 @@ authors = ["Manu Lange <manulange_3@hotmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
+requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+tox-poetry = "^0.4.1"
+dunamai = "^1.6.0"
+black = "^21.7b0"
+pytest-cov = "^2.12.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

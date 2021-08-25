@@ -1,0 +1,38 @@
+{
+  "docType" : "jts",
+  "subType" : "TIMESERIES",
+  "version" : "1.0",
+  "header" : {
+    "startTime" : "2021-07-21T21:20:00.000Z",
+    "endTime" : "2021-07-21T21:30:00.000Z",
+    "recordCount" : 2,
+    "columns" : {
+      "0" : {
+        "id" : "60f8a3175ff72c0ee58aadb0",
+        "name" : "id",
+        "dataType" : "NUMBER",
+        "aggregate" : "NONE",
+        "baseTime" : "D[Z]",
+        "format" : "0.###",
+        "renderType" : "VALUE",
+        "units" : "",
+        "baselineType" : "ABSOLUTE"
+      },
+      "1" : {
+        "id" : "60f8a0ef6dfce40ebe570a83",
+        "name" : "Temperature",
+        "dataType" : "NUMBER",
+        "aggregate" : "NONE",
+        "baseTime" : "D[Z]",
+        "format" : "0.###",
+        "renderType" : "VALUE",
+        "units" : "°C",
+        "baselineType" : "ABSOLUTE"
+      }
+    }
+  },
+  "data" : [
+     {"ts":"2021-07-22T09:20:00.000+12:00","f":{"1":{"v":10,"q":100}}}
+    ,{"ts":"2021-07-22T09:30:00.000+12:00","f":{"1":{"v":15,"q":100}}}
+   ]
+}
