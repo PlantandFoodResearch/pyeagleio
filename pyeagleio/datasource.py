@@ -1,6 +1,4 @@
 from typing import Union, Optional, List
-
-import requests
 from pyeagleio.https import HTTPSClient
 import logging
 
@@ -54,28 +52,23 @@ class DataSource:
         self.node = node_id_or_name
         self._client = client
         self._nodeid: Optional[str] = None
-        self._session: requests.Session = self._client.session
         self._check_node()
         self._parameters: List[Parameter] = []
         self._get_node_online()
 
     def _get_node_online(self):
         """Gets column information from the API and fills out class instance"""
-        resp = self._session.get(
-            url=f"{self._client.url}/api/v1/nodes",
+        resp = self._client.get(
+            path=f"api/v1/nodes",
             params={"filter": "parentId($eq:612c56d2818fe30f7b6533c9)"},
         )
-        if resp.status_code != 200:
-            raise ValueError(f"API Check failed ({resp.status_code}): {resp.content}")
         resp = resp.json()
         for child in resp:
             self._parameters.append(Parameter.from_node(child))
 
     def _check_node(self):
         """Raises if API enpoint seems non-functional"""
-        resp = self._session.get(url=f"{self._client.url}/api/v1/nodes/{self.node}")
-        if resp.status_code != 200:
-            raise ValueError(f"API Check failed ({resp.status_code}): {resp.content}")
+        resp = self._client.get(path=f"api/v1/nodes/{self.node}")
         if "source.data" not in resp.json()["_class"]:
             raise ValueError(f"Invalid node type: {resp.json()['_class']}")
         self._nodeid = resp.json().get("_id", None)
@@ -86,14 +79,10 @@ class DataSource:
         It is often easier to use 'send_value' instead once the parameters have been defined
         """
         # Todo: add compression if large content
-        resp = self._session.put(
-            url=f"{self._client.url}/api/v1/nodes/{self.node}/historic",
+        _ = self._client.put(
+            path=f"api/v1/nodes/{self.node}/historic",
             json=jts_content,
         )
-        if resp.status_code != 200 and resp.status_code != 202:
-            raise ValueError(
-                f"Put historic data failed ({resp.status_code}): {resp.content}"
-            )
 
     def send_value(self, value, name, quality=None, annotation=None, ts=None):
         """Send a value directly to a column of given name.
@@ -105,8 +94,8 @@ class DataSource:
             raise ValueError(
                 "When sending single value, parameter name must match existing parameters"
             )
-        resp = self._session.put(
-            url=f"{self._client.url}/api/v1/nodes/{param.id}/historic/now",
+        _ = self._client.put(
+            path=f"api/v1/nodes/{param.id}/historic/now",
             json={
                 "value": value,
                 "quality": quality,
@@ -114,10 +103,6 @@ class DataSource:
                 "timestamp": ts,
             },
         )
-        if resp.status_code != 200 and resp.status_code != 202:
-            raise ValueError(
-                f"Put single value failed ({resp.status_code}): {resp.content}"
-            )
 
     @property
     def params(self) -> List[Parameter]:

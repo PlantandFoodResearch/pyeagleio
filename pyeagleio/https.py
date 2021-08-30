@@ -1,7 +1,16 @@
-import requests
 import logging
+from pyeagleio import MICROPYTHON
+
+if MICROPYTHON:
+    import urequests as requests
+else:
+    import requests
 
 log = logging.getLogger(__name__)
+
+
+class HTTPSClientError(IOError):
+    pass
 
 
 class HTTPSClient:
@@ -19,20 +28,49 @@ class HTTPSClient:
             )
         self._api_key = api_key
         self._host = host
-        self._session = requests.Session()
-        self._session.headers.update({"X-Api-Key": self._api_key})
         self._base_url = f"https://{host}:{HTTPSClient._PORT}"
         self._check_connection()
 
     def _check_connection(self):
-        resp = self.session.get(url=f"{self._base_url}/api/v1/owners/account")
+        resp = self.get("api/v1/owners/account")
         if resp.status_code != 200:
             raise ValueError(f"API Check failed ({resp.status_code}): {resp.content}")
 
     @property
-    def session(self) -> requests.Session:
-        return self._session
-
-    @property
     def url(self) -> str:
         return self._base_url
+
+    def _call_requests(self, method, path, **kwargs):
+        """Compatability layer for CPython / Micropython to avoid using a Session"""
+        headers = kwargs.get("headers", {})
+        headers.update({"X-Api-Key": self._api_key})
+        kwargs.update({"headers": headers})
+        url = self.path_to_url(path)
+        params = kwargs.get("params", None)
+        if params:
+            from urllib.parse import urlencode, quote
+
+            url += "?" + quote(urlencode(params))
+        resp = requests.request(method, url, **kwargs)
+        if resp.status_code >= 300:
+            raise HTTPSClientError(
+                f"API request error status: {resp.status_code}, msg: {resp.text}"
+            )
+        return resp
+
+    def path_to_url(self, path) -> str:
+        return f"{self._base_url}/{path.rstrip('/')}"
+
+    def encode_params(self, params: dict) -> str:
+        result = ""
+        for key, item in params:
+            result
+
+    def get(self, path, **kwargs):
+        return self._call_requests("GET", path, **kwargs)
+
+    def post(self, path, **kwargs):
+        return self._call_requests("POST", path, **kwargs)
+
+    def put(self, path, **kwargs):
+        return self._call_requests("PUT", path, **kwargs)

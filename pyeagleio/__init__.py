@@ -6,6 +6,11 @@ if sys.version_info[:2] >= (3, 8):
 else:
     from importlib_metadata import PackageNotFoundError, version  # pragma: no cover
 
+MICROPYTHON = False
+# Protect for micropython version
+if "micropython" in str(sys.implementation):
+    MICROPYTHON = True
+
 try:
     # Change here if project is renamed and does not equal the package name
     dist_name = __name__
@@ -14,6 +19,3 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 # finally:
 #     del version, PackageNotFoundError
-
-
-from pyeagleio.datasource import DataSource

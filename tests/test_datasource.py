@@ -1,4 +1,4 @@
-from pyeagleio import DataSource
+from pyeagleio.datasource import DataSource
 from pyeagleio.jts import TimeSeries, Column, DataPoint
 
 
