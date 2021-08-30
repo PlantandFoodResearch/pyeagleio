@@ -12,8 +12,8 @@ try:
     __version__ = version(dist_name)
 except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
-finally:
-    del version, PackageNotFoundError
+# finally:
+#     del version, PackageNotFoundError
 
 
 from pyeagleio.datasource import DataSource

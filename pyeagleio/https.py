@@ -14,8 +14,8 @@ class HTTPSClient:
     ):
         if not api_key:
             raise ValueError(
-                "You must supply a valid Eagle API Key. Visit https://docs.eagle.io/en/latest/topics/\
-            account_settings/security/index.html#management-security-apikeys for more information"
+                """You must supply a valid Eagle API Key. Visit https://docs.eagle.io/en/latest/topics/\
+            account_settings/security/index.html#management-security-apikeys for more information"""
             )
         self._api_key = api_key
         self._host = host
