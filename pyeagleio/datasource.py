@@ -12,7 +12,7 @@ class Parameter(object):
     DT_COORDINATES = "COORDINATES"
     DT_UNKNOWN = None
 
-    def __init__(self, node_id: str, name: str, fmt: str, dt: str):
+    def __init__(self, node_id: str, name: str, fmt: str, dt: str, units: str):
         self.id = node_id
         self.name = name
         self.format = fmt
@@ -25,6 +25,7 @@ class Parameter(object):
             # See https://docs.eagle.io/en/latest/reference/historic/jts.html?highlight=dataType#json-time-series
             raise ValueError("invalid Eagle.IO dataType given")
         self.dt = dt
+        self.units = units
         self._cached_node: Optional[dict] = None
 
     @classmethod
@@ -33,13 +34,17 @@ class Parameter(object):
         node_id = node_json.get("_id", None)
         name = node_json.get("name", None)
         fmt = node_json.get("format", None)
+        units = node_json.get("units", "")
         if "NumberPoint" in node_json.get("_class"):
             dt = Parameter.DT_NUMBER
         else:
             dt = Parameter.DT_UNKNOWN
-        obj = cls(node_id, name, fmt, dt)
+        obj = cls(node_id, name, fmt, dt, units)
         obj._cached_node = node_json
         return obj
+
+    def __repr__(self) -> str:
+        return f"{self.name}"
 
 
 class DataSource:
@@ -89,8 +94,9 @@ class DataSource:
 
         If timestamp(ts) is None, then API will use request ts.
         """
-        param = next((p for p in self.params if p.name == name), None)
-        if not param:
+        try:
+            param = next(p for p in self.params if p.name == name)
+        except StopIteration as _:
             raise ValueError(
                 "When sending single value, parameter name must match existing parameters"
             )

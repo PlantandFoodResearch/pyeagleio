@@ -9,7 +9,7 @@ else:
 log = logging.getLogger(__name__)
 
 
-class HTTPSClientError(IOError):
+class HTTPSClientError(Exception):
     pass
 
 
@@ -50,7 +50,9 @@ class HTTPSClient:
         if params:
             from urllib.parse import urlencode, quote
 
-            url += "?" + quote(urlencode(params))
+            url += "?" + urlencode(params)
+            # Does not properly encode "(". Quote also seems to give the wrong result
+            kwargs.pop("params")  # Remove from kwargs
         resp = requests.request(method, url, **kwargs)
         if resp.status_code >= 300:
             raise HTTPSClientError(
@@ -60,11 +62,6 @@ class HTTPSClient:
 
     def path_to_url(self, path) -> str:
         return f"{self._base_url}/{path.rstrip('/')}"
-
-    def encode_params(self, params: dict) -> str:
-        result = ""
-        for key, item in params:
-            result
 
     def get(self, path, **kwargs):
         return self._call_requests("GET", path, **kwargs)

@@ -31,6 +31,15 @@ column.add_data_point(dp)
 ds.send(jts)
 ```
 
+## Micropython Support
+This library is somewhat compatible with Micropython **after** being converted.
+Use [pytomicropy](https://github.com/pfrnz/pytomicropy) to perform the conversion. E.g.
+```bash
+python -m pip install https://github.com/pfrnz/pytomicropy/archive/main.zip
+pytomicropy --help
+pytomicropy --input pyeagleio --output /path/to/pycom/project/libs/pyeagleio
+```
+
 ## Developers
 
 ```python

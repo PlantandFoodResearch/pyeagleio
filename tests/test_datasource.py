@@ -1,3 +1,5 @@
+import pytest
+
 from pyeagleio.datasource import DataSource
 from pyeagleio.jts import TimeSeries, Column, DataPoint
 
@@ -12,8 +14,14 @@ def test_upload(httpsclient, example_jts):
 
 
 def test_upload_single_value(httpsclient, example_jts):
-    param = DataSource("@test-ci-source", client=httpsclient)
-    param.send_value(value=25.1, name="Temperature")
+    ds = DataSource("@test-ci-source", client=httpsclient)
+    ds.send_value(value=25.1, name="Temperature")
+    assert len(ds.params) == 3
+    for param in ds.params:
+        if param.name == "Temperature":
+            assert param.units == "°C"
+    with pytest.raises(ValueError) as exc:
+        ds.send_value(value=25.1, name="BadParam")
 
 
 def test_upload_JTS(httpsclient, example_jts):
