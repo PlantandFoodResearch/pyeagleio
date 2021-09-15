@@ -1,5 +1,6 @@
 import pytest
 
+from datetime import datetime
 from pyeagleio.datasource import DataSource
 from pyeagleio.jts import TimeSeries, Column, DataPoint
 
@@ -22,6 +23,13 @@ def test_upload_single_value(httpsclient, example_jts):
             assert param.units == "°C"
     with pytest.raises(ValueError) as exc:
         ds.send_value(value=25.1, name="BadParam")
+
+
+def test_upload_single_annotation(httpsclient, example_jts):
+    ds = DataSource("@test-ci-source", client=httpsclient)
+    ts = datetime.fromisoformat("2021-09-10T12:00:00").astimezone().replace(microsecond=0).isoformat()
+    ds.send_value(value=None, name="Temperature", annotation="Testing", ts=ts)
+    pass
 
 
 def test_upload_JTS(httpsclient, example_jts):

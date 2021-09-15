@@ -1,3 +1,4 @@
+import typing
 from typing import Union, Optional, List
 from pyeagleio.https import HTTPSClient
 import logging
@@ -89,7 +90,7 @@ class DataSource:
             json=jts_content,
         )
 
-    def send_value(self, value, name, quality=None, annotation=None, ts=None):
+    def send_value(self, value: typing.Optional[typing.Union[str, float]], name, quality=None, annotation=None, ts=None):
         """Send a value directly to a column of given name.
 
         If timestamp(ts) is None, then API will use request ts.
