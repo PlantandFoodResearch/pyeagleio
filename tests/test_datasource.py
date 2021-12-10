@@ -25,6 +25,11 @@ def test_upload_single_value(httpsclient, example_jts):
         ds.send_value(value=25.1, name="BadParam")
 
 
+def test_create_new_param(httpsclient, example_jts):
+    ds = DataSource("@test-ci-source", client=httpsclient)
+    ds.create_new_param("ci-test-param", units="mm")
+
+
 def test_upload_single_annotation(httpsclient, example_jts):
     ds = DataSource("@test-ci-source", client=httpsclient)
     ts = (

@@ -1,6 +1,7 @@
 """
 Example Document
-"docType": "jts",
+{
+    "docType": "jts",
     "version": "1.0",
     "header": {
         "startTime": "<startTime>",

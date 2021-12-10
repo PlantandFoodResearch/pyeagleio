@@ -1,3 +1,4 @@
+import time
 import typing
 from typing import Union, Optional, List
 from pyeagleio.https import HTTPSClient
@@ -44,8 +45,16 @@ class Parameter(object):
         obj._cached_node = node_json
         return obj
 
-    def __repr__(self) -> str:
+    def __str__(self):
         return f"{self.name}"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.__str__() == other
+        return False
 
 
 class DataSource:
@@ -89,6 +98,33 @@ class DataSource:
             path=f"api/v1/nodes/{self.node}/historic",
             json=jts_content,
         )
+
+    def create_new_param(self, name, units="", dataType=Parameter.DT_NUMBER, format=None):
+        """Creates a new parameter for this data source"""
+        resp = self._client.post(
+            path=f"api/v1/nodes/{self.node}/historic",
+            json={
+                    "docType": "jts",
+                    "version": "1.0",
+                    "header" : {
+                        "columns": {
+                            "0": {
+                                "name": name,
+                                "dataType": dataType,
+                                "units": units,
+                                "format": format
+                            }
+                        }
+                    },
+                    "data": []
+                }
+        )
+        # We need to wait for Eagle to update the node...
+        time.sleep(0.5)
+        self._parameters: List[Parameter] = []
+        self._get_node_online()
+        if name not in self.params:
+            raise ValueError("Failed to create parameter")
 
     def send_value(
         self,
