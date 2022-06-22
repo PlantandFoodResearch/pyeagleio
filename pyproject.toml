@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyeagleio"
-version = "0.4.0"
+version = "0.4.1"
 description = "Python library to interact with https://eagle.io/"
 authors = ["Manu Lange <manulange_3@hotmail.com>"]
 
