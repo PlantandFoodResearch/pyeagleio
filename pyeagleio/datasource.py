@@ -75,7 +75,7 @@ class DataSource:
         """Gets column information from the API and fills out class instance"""
         resp = self._client.get(
             path=f"api/v1/nodes",
-            params={"filter": f"parentId($eq:{self.node})"},
+            params={"filter": f"parentId($eq:{self._nodeid})"},
         )
         resp = resp.json()
         for child in resp:
