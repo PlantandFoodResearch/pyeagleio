@@ -99,25 +99,27 @@ class DataSource:
             json=jts_content,
         )
 
-    def create_new_param(self, name, units="", dataType=Parameter.DT_NUMBER, format=None):
+    def create_new_param(
+        self, name, units="", dataType=Parameter.DT_NUMBER, format=None
+    ):
         """Creates a new parameter for this data source"""
         resp = self._client.post(
             path=f"api/v1/nodes/{self.node}/historic",
             json={
-                    "docType": "jts",
-                    "version": "1.0",
-                    "header" : {
-                        "columns": {
-                            "0": {
-                                "name": name,
-                                "dataType": dataType,
-                                "units": units,
-                                "format": format
-                            }
+                "docType": "jts",
+                "version": "1.0",
+                "header": {
+                    "columns": {
+                        "0": {
+                            "name": name,
+                            "dataType": dataType,
+                            "units": units,
+                            "format": format,
                         }
-                    },
-                    "data": []
-                }
+                    }
+                },
+                "data": [],
+            },
         )
         # We need to wait for Eagle to update the node...
         time.sleep(0.5)
